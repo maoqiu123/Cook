@@ -4,9 +4,13 @@ namespace App\Http\Controllers\Auth;
 
 use App\User;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\DB;
+use App\Tools\ValidationHelper;
+use App\Tools\RequestTool;
 
 class RegisterController extends Controller
 {
@@ -21,14 +25,14 @@ class RegisterController extends Controller
     |
     */
 
-    use RegistersUsers;
+//    use RegistersUsers;
 
     /**
      * Where to redirect users after registration.
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+//    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -37,22 +41,7 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('guest');
-    }
-
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
-        ]);
+//        $this->middleware('guest');
     }
 
     /**
@@ -61,12 +50,19 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\User
      */
-    protected function create(array $data)
+    protected function create(Request $request)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $ruler = [
+            'username'=>'required',
+            'password'=>'required',
+            'email'=>'required|email|unique:users'
+        ];
+        $validator = ValidationHelper::checkAndGet($request,$ruler,1001);
+        if (is_object($validator)){
+            return $validator;
+        }
+        $validator['password'] = encrypt($validator['password']);
+        DB::table('users')->insert($validator);
+        return RequestTool::response(1000,'注册成功',null);
     }
 }

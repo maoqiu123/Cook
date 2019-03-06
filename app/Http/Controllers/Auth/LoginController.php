@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Tools\ValidationHelper;
+use App\Tools\RequestTool;
 
 class LoginController extends Controller
 {
@@ -18,22 +21,36 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
 
     /**
      * Where to redirect users after login.
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+//    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
      *
-     * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
+    public function login(Request $request){
+        $ruler = [
+            'password'=>'required',
+            'email'=>'required|email'
+        ];
+        $validator = ValidationHelper::checkAndGet($request,$ruler,1001);
+        if (is_object($validator)){
+            return $validator;
+        }
+        $password = DB::table('users')->where('email',$validator['email'])->value('password');
+        if ($password){
+            if ($validator['password'] === decrypt($password)){
+                return RequestTool::response(1000,'登录成功',null);
+            }else{
+                return RequestTool::response(2001,'登录失败，请检查账号密码',null);
+            }
+        }else{
+            return RequestTool::response(1002,'登录失败，请检查账号是否存在',null);
+        }
     }
 }
