@@ -2,46 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Foundation\Auth\RegistersUsers;
-use Illuminate\Support\Facades\DB;
 use App\Tools\ValidationHelper;
 use App\Tools\RequestTool;
+use App\Services\UserService;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
 
-//    use RegistersUsers;
-
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
-//    protected $redirectTo = '/home';
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    private $userService;
+    public function __construct(UserService $userService)
     {
-//        $this->middleware('guest');
+        $this->userService = $userService;
     }
 
     /**
@@ -61,8 +34,9 @@ class RegisterController extends Controller
         if (is_object($validator)){
             return $validator;
         }
-        $validator['password'] = encrypt($validator['password']);
-        DB::table('users')->insert($validator);
+
+        $this->userService->register($validator);
+
         return RequestTool::response(1000,'注册成功',null);
     }
 }

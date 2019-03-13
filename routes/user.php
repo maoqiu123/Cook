@@ -6,5 +6,5 @@
  * Time: 16:12
  */
 
-Route::post('/login', 'Auth\LoginController@login');
+Route::post('/login', 'Auth\LoginController@login')->middleware('token');
 Route::post('/register', 'Auth\RegisterController@create');
