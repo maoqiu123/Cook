@@ -8,6 +8,7 @@
 
 namespace App\Services;
 
+use App\Tools\FileUploadTool;
 use App\Tools\RequestTool;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -40,6 +41,17 @@ class UserService extends BaseService
         }else{
             return RequestTool::response(1002,'登录失败，请检查账号是否存在',null);
         }
+    }
+    public function update($pic,$username,$user){
+        $file = new FileUploadTool();
+        $file = $file->saveToQiniu($pic,'user');
+        if ($file == false){
+            return RequestTool::response(4001,"上传文件失败",null);
+        }
+        $user->username = $username;
+        $user->pic = json_decode(json_encode($file['url']));
+        DB::table($this->table)->where('id',$user->id)->update((array)$user);
+        return RequestTool::response(1000,"更新用戶信息成功",$user);
     }
 
 

@@ -27,4 +27,16 @@ class LoginController extends Controller
 
         return $this->userService->login($validator);
     }
+
+    public function update(Request $request){
+        $ruler = [
+            'username'=>'',
+            'pic'=>'required|file'
+        ];
+        $validator = ValidationHelper::checkAndGet($request,$ruler,1001);
+        if (is_object($validator)){
+            return $validator;
+        }
+        return $this->userService->update($request->file('pic'),$validator['username'],$request->user);
+    }
 }

@@ -22,7 +22,7 @@ class TokenMiddleware
             $token_expire = DB::table("users")->where('token',$request->token)->value('token_expire');
             if ($token_expire){
                 if ($token_expire > Carbon::now()) {
-                    $user = DB::table('users')->where('token',$request->token)->first();
+                    $user = DB::table('users')->where('token',$request->token)->select(['id','username','email','pic','token','token_expire'])->first();
                     $request->user = $user;
                     return $next($request);
                 }else{
