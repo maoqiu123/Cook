@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Services\UserService;
+use App\Tools\RequestTool;
 use Illuminate\Http\Request;
 use App\Tools\ValidationHelper;
 
@@ -38,5 +39,9 @@ class LoginController extends Controller
             return $validator;
         }
         return $this->userService->update($request->file('pic'),$validator['username'],$request->user);
+    }
+
+    public function getUserByToken(Request $request){
+        return RequestTool::response(1000,"获取用户成功",$request->user);
     }
 }

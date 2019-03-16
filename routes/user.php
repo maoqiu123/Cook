@@ -8,3 +8,4 @@
 Route::post('/register', 'Auth\RegisterController@create');
 Route::post('/login', 'Auth\LoginController@login');
 Route::post('/user', 'Auth\LoginController@update')->middleware('token');
+Route::get('/user', 'Auth\LoginController@getUserByToken')->middleware('token');
