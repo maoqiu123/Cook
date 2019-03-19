@@ -73,14 +73,7 @@ return [
             'access'    => 'public', //空间访问控制 public 或 private
             'hotlink_prevention_key' => null, // CDN 时间戳防盗链的 key。 设置为 null 则不启用本功能。
 //            'hotlink_prevention_key' => 'cbab68a279xxxxxxxxxxab509a', // 同上，备用
-        ],
-//        'qiniu' => [
-//            'driver'    => 'cook',
-//            'domain'    => env('QINIU_DOMAIN'),  //你的七牛域名
-//            'access_key'=> env('QINIU_ACCESS_KEY'),    //AccessKey
-//            'secret_key'=> env('QINIU_SECRET_KEY'),   //SecretKey
-//            'bucket'    => env('QINIU_BUCKET'),    //Bucket名字
-//        ],
+        ]
 
     ],
 

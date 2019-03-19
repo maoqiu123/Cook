@@ -16,3 +16,5 @@ Route::get('/', function () {
 });
 
 include "user.php";
+
+Route::post('/test', '\App\Tools\CacheTool@test');
