@@ -32,13 +32,13 @@ class LoginController extends Controller
     public function update(Request $request){
         $ruler = [
             'username'=>'',
-            'pic'=>'required|file'
+            'pic'=>''
         ];
         $validator = ValidationHelper::checkAndGet($request,$ruler,1001);
         if (is_object($validator)){
             return $validator;
         }
-        return $this->userService->update($request->file('pic'),$validator['username'],$request->user);
+        return $this->userService->update($validator,$request->user);
     }
 
     public function getUserByToken(Request $request){

@@ -72,4 +72,10 @@ class FileUploadTool
     {
         return config('app.url') . "/" . $path;
     }
+
+    public function getUploadToken(){
+        $backet = 'cook';
+        $disk = Storage::disk('qiniu');
+        return RequestTool::response(1000,'获取uploadToken成功',$disk->uploadToken($backet));
+    }
 }

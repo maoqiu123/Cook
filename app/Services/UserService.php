@@ -42,14 +42,19 @@ class UserService extends BaseService
             return RequestTool::response(1002,'登录失败，请检查账号是否存在',null);
         }
     }
-    public function update($pic,$username,$user){
-        $file = new FileUploadTool();
-        $file = $file->saveToQiniu($pic,'user');
-        if ($file == false){
-            return RequestTool::response(4001,"上传文件失败",null);
+    public function update($data,$user){
+        if ($data['pic'] !== null){
+//            $file = new FileUploadTool();
+//            $file = $file->saveToQiniu($data['pic'],'user');
+//            if ($file == false){
+//                return RequestTool::response(4001,"上传文件失败",null);
+//            }
+            $user->pic = $data['pic'];
         }
-        $user->username = $username;
-        $user->pic = json_decode(json_encode($file['url']));
+        if ($data['username'] !== null){
+            $user->username = $data['username'];
+        }
+
         DB::table($this->table)->where('id',$user->id)->update((array)$user);
         return RequestTool::response(1000,"更新用戶信息成功",$user);
     }
